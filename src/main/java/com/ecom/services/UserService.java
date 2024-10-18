@@ -6,21 +6,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
+
 @Service
 public class UserService {
 
     @Autowired
     private UserRepository userRepository;
 
-    private PasswordEncoder passwordEncoder; // Menggunakan PasswordEncoder
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public User saveUser(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword())); // Mengkodekan password
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
     public User findByUsername(String username) {
-        throw new UnsupportedOperationException("Unimplemented method 'findByUsername'");
+        return userRepository.findByUsername(username)
+            .orElseThrow(() -> new NoSuchElementException("User not found: " + username));
     }
-
 }

@@ -8,8 +8,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.core.userdetails.User.UserBuilder;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 public class UserDetailsServiceImpl implements org.springframework.security.core.userdetails.UserDetailsService {
 
@@ -21,15 +19,10 @@ public class UserDetailsServiceImpl implements org.springframework.security.core
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // Gunakan Optional.ofNullable agar tidak error jika null
-        Optional<User> optionalUser = Optional.ofNullable(userRepository.findByUsername(username));
+        // Ambil User dari repository, tidak perlu Optional.ofNullable
+        User user = userRepository.findByUsername(username)
+            .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
 
-        if (optionalUser.isEmpty()) {
-            throw new UsernameNotFoundException("User not found");
-        }
-
-        User user = optionalUser.get();
-        
         // Gunakan UserBuilder untuk membangun objek UserDetails dari user yang ditemukan
         UserBuilder builder = org.springframework.security.core.userdetails.User.withUsername(user.getUsername());
         builder.password(user.getPassword());

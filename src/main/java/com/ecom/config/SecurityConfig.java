@@ -36,7 +36,7 @@ public class SecurityConfig {
         http
             .csrf().disable() // Nonaktifkan CSRF jika menggunakan JWT
             .authorizeHttpRequests(authz -> authz
-                .requestMatchers("/api/auth/**").permitAll() // Izinkan akses ke endpoint auth
+                .requestMatchers("/api/auth/login","/api/auth/register").permitAll() // Izinkan akses ke endpoint auth
                 .requestMatchers("/api/menus/**").hasRole("Administrator") // Hanya ADMIN yang bisa mengakses
                 .anyRequest().authenticated() // Semua request lainnya harus diautentikasi
             )
